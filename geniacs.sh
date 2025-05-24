@@ -50,20 +50,14 @@ print_banner() {
 	echo "  \____/_/   \_\____|____/   |____/ \___|_|  |_| .__/ \__|"
 	echo "                                               |_|        "
 	echo ""
-	echo "                  --- Ubuntu 22.04 ---"
-	echo "                  --- AchmadPR ---"
+	echo "                  --- Armbian ---"
+	echo "                  --- Riphcky ---"
 	echo -e "${NC}"
 }
 
 # Check for root access
 if [ "$EUID" -ne 0 ]; then
     echo -e "${RED}This script must be run as root${NC}"
-    exit 1
-fi
-
-# Check Ubuntu version
-if [ "$(lsb_release -cs)" != "jammy" ]; then
-    echo -e "${RED}This script only supports Ubuntu 22.04 (Jammy)${NC}"
     exit 1
 fi
 
@@ -84,7 +78,7 @@ run_command "apt install -y nodejs" "Installing NodeJS ($(( ++current_step ))/$t
 
 run_command "apt install -y npm" "Installing NPM ($(( ++current_step ))/$total_steps)"
 
-run_command "wget http://archive.ubuntu.com/ubuntu/pool/main/o/openssl/libssl1.1_1.1.0g-2ubuntu4_amd64.deb && dpkg -i libssl1.1_1.1.0g-2ubuntu4_amd64.deb" "Installing libssl ($(( ++current_step ))/$total_steps)"
+run_command "wget http://ports.ubuntu.com/pool/main/o/openssl/libssl1.1_1.1.1f-1ubuntu2_arm64.deb && dpkg -i libssl1.1_1.1.1f-1ubuntu2_arm64.deb" "Installing libssl ($(( ++current_step ))/$total_steps)"
 
 run_command "curl -fsSL https://www.mongodb.org/static/pgp/server-4.4.asc | apt-key add -" "Adding MongoDB key ($(( ++current_step ))/$total_steps)"
 
@@ -92,9 +86,7 @@ run_command "echo 'deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu 
 
 run_command "apt-get update -y" "Updating package list ($(( ++current_step ))/$total_steps)"
 
-run_command "apt-get install mongodb-org -y" "Installing MongoDB ($(( ++current_step ))/$total_steps)"
-
-run_command "apt-get upgrade -y" "Upgrading system ($(( ++current_step ))/$total_steps)"
+run_command "sudo apt-get install mongodb-org=4.4.8 mongodb-org-server=4.4.8 mongodb-org-shell=4.4.8 mongodb-org-mongos=4.4.8 mongodb-org-tools=4.4.8" "Installing MongoDB ($(( ++current_step ))/$total_steps)"
 
 run_command "systemctl start mongod" "Starting MongoDB service ($(( ++current_step ))/$total_steps)"
 
